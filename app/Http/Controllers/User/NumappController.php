@@ -231,7 +231,7 @@ class NumappController extends Controller
             'pd'=>$this->getPdPredictionRamidy($pratyantardasha,'ad')
         ];
 
-        dd($this->getPdPredictionRamidy($pratyantardasha,'ad'),$pratyantardasha);
+        // dd($this->getPdPredictionRamidy($pratyantardasha,'ad'),$pratyantardasha);
         return view('user.numerology.numapp', compact('result'));
     }
 
