@@ -1,0 +1,160 @@
+<?php $__env->startSection('title', 'Admin Dashboard'); ?>
+
+<?php $__env->startSection('page-title', 'Dashboard'); ?>
+
+<?php $__env->startSection('content'); ?>
+    <div class="card dashboard-card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Dashboard Overview</h5>
+        </div>
+        <div class="card-body">
+            <!-- Dashboard Cards -->
+            <div class="row mb-4">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="card-icon text-primary">
+                            <i class="bi bi-people"></i>
+                        </div>
+                        <h5 class="card-title">Total Users</h5>
+                        <h2 class="mb-0"><?php echo e($totalUsers); ?></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="card-icon text-success">
+                            <i class="bi bi-box"></i>
+                        </div>
+                        <h5 class="card-title">Total Packages</h5>
+                        <h2 class="mb-0"><?php echo e($totalPackages); ?></h2>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-4">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div class="card-icon text-info">
+                            <i class="bi bi-cart"></i>
+                        </div>
+                        <h5 class="card-title">Total Orders</h5>
+                        <h2 class="mb-0"><?php echo e($totalOrders); ?></h2>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row mb-4">
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Order Status</h5>
+                        <div class="mt-4">
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Pending Orders</span>
+                                    <span><?php echo e($pendingOrders); ?></span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-warning" role="progressbar" style="width: <?php echo e($totalOrders > 0 ? ($pendingOrders / $totalOrders) * 100 : 0); ?>%"></div>
+                                </div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="d-flex justify-content-between mb-1">
+                                    <span>Completed Orders</span>
+                                    <span><?php echo e($completedOrders); ?></span>
+                                </div>
+                                <div class="progress" style="height: 10px;">
+                                    <div class="progress-bar bg-success" role="progressbar" style="width: <?php echo e($totalOrders > 0 ? ($completedOrders / $totalOrders) * 100 : 0); ?>%"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-4">
+                <div class="card h-100">
+                    <div class="card-body">
+                        <h5 class="card-title">Quick Actions</h5>
+                        <div class="list-group mt-3">
+                            <a href="<?php echo e(route('admin.packages.create')); ?>" class="list-group-item list-group-item-action">
+                                <i class="bi bi-plus-circle me-2"></i> Add New Package
+                            </a>
+                            <a href="<?php echo e(route('admin.users.create')); ?>" class="list-group-item list-group-item-action">
+                                <i class="bi bi-person-plus me-2"></i> Add New User
+                            </a>
+                            <a href="<?php echo e(route('admin.orders.index')); ?>" class="list-group-item list-group-item-action">
+                                <i class="bi bi-list-check me-2"></i> Manage Orders
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        </div>
+    </div>
+
+    <!-- Recent Orders -->
+    <div class="card dashboard-card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Recent Orders</h5>
+            <div>
+                <a href="<?php echo e(route('admin.orders.index')); ?>" class="btn btn-primary">View All Orders</a>
+            </div>
+        </div>
+        <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped table-sm">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>User</th>
+                                <th>Package</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $__currentLoopData = $recentOrders; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $order): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                <tr>
+                                    <td><?php echo e($order->id); ?></td>
+                                    <td><?php echo e($order->user->name); ?></td>
+                                    <td><?php echo e($order->package->name); ?></td>
+                                    <td>₹<?php echo e(number_format($order->amount, 2)); ?></td>
+                                    <td>
+                                        <?php if($order->status == 'pending'): ?>
+                                            <span class="badge bg-warning">Pending</span>
+                                        <?php elseif($order->status == 'processing'): ?>
+                                            <span class="badge bg-info">Processing</span>
+                                        <?php elseif($order->status == 'completed'): ?>
+                                            <span class="badge bg-success">Completed</span>
+                                        <?php elseif($order->status == 'cancelled'): ?>
+                                            <span class="badge bg-danger">Cancelled</span>
+                                        <?php endif; ?>
+                                    </td>
+                                    <td><?php echo e($order->created_at->format('d M Y')); ?></td>
+                                    <td>
+                                        <a href="<?php echo e(route('admin.orders.show', $order)); ?>" class="btn btn-sm btn-primary">
+                                            <i class="bi bi-eye"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                            
+                            <?php if(count($recentOrders) == 0): ?>
+                                <tr>
+                                    <td colspan="7" class="text-center">No orders found</td>
+                                </tr>
+                            <?php endif; ?>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layouts.admin', array_diff_key(get_defined_vars(), ['__data' => 1, '__path' => 1]))->render(); ?><?php /**PATH /var/www/vhosts/srknumerology.com/numro.srknumerology.com/resources/views/admin/dashboard.blade.php ENDPATH**/ ?>
